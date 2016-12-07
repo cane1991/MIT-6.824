@@ -38,7 +38,7 @@ func (vs *ViewServer) printView()  {
 	if vs.currentView == nil {
 		fmt.Println("No view in the view server!")
 	} else {
-		fmt.Println("Current view:%d, %s, %s", vs.currentView.Viewnum, vs.currentView.Primary, vs.currentView.BackUp)
+		fmt.Printf("Current view:%d, %s, %s\n", vs.currentView.Viewnum, vs.currentView.Primary, vs.currentView.BackUp)
 	}
 }
 
@@ -89,13 +89,15 @@ func (vs *ViewServer) Ping(args *PingArgs, reply *PingReply) error  {
 	defer vs.mu.Unlock()
 
 	pingServer, pingViewNum := args.Me, args.ViewNum
-	fmt.Println("Ping message from %s", pingServer)
+	fmt.Printf("Ping message from %v %d\n", pingServer, pingViewNum)
 	vs.printView()
 	if pingViewNum == 0 {
 		//如果刚加入集群的话
 		if vs.currentView == nil {
 			//如果view server刚启动
-			vs.currentView = createView(pingViewNum, pingServer, "")
+			fmt.Printf("Begin to create new view %s %d\n",pingServer, pingViewNum)
+			vs.currentView = createView(1, pingServer, "")
+			fmt.Printf("Create view success %+v \n", vs.currentView)
 		} else {
 			//down -> active
 			if vs.currentView.Primary == pingServer {
@@ -119,6 +121,7 @@ func (vs *ViewServer) Ping(args *PingArgs, reply *PingReply) error  {
 				vs.primaryAcked = false
 			} else {
 				vs.primaryAcked = true
+				fmt.Printf("Been set as true:%v %v\n",pingServer, vs.currentView.Primary)
 			}
 		}
 	}
@@ -157,9 +160,12 @@ func (vs *ViewServer) tick()  {
 		}
 	}
 
+	fmt.Printf("Current view before:%+v\n", vs.currentView)
+	fmt.Printf("Has been acked?%v\n", vs.primaryAcked)
 	if vs.primaryAcked && vs.updateAndSwitch() {
 		vs.primaryAcked = false
 	}
+	fmt.Printf("Current view after:%+v\n", vs.currentView)
 
 	/**
 	集群只有一个节点，并且挂了

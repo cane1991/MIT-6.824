@@ -38,6 +38,7 @@ func Test1(t *testing.T) {
 
 	vshost := port("v")
 	vs := StartServer(vshost)
+	fmt.Printf("View Server is:%v\n", vs)
 
 	ck1 := MakeClerk(port("1"), vshost)
 	ck2 := MakeClerk(port("2"), vshost)
@@ -186,19 +187,20 @@ func Test1(t *testing.T) {
 		vx, _ := ck1.Get()
 		for i := 0; i < DeadPings*3; i++ {
 			ck1.Ping(0)
-			ck3.Ping(vx.Viewnum)
 			v, _ := ck1.Get()
 			if v.Viewnum > vx.Viewnum {
 				break
 			}
+			ck3.Ping(vx.Viewnum)
 			time.Sleep(PingInterval)
 		}
 		check(t, ck1, ck3.me, ck1.me, vx.Viewnum+1)
 		vy, _ := ck1.Get()
 		// ck3 is the primary, but it never acked.
 		// let ck3 die. check that ck1 is not promoted.
-		for i := 0; i < DeadPings*3; i++ {
+		for i := 0; i < DeadPings*2; i++ {
 			v, _ := ck1.Ping(vy.Viewnum)
+			fmt.Printf("Reply view:%+v\n", v)
 			if v.Viewnum > vy.Viewnum {
 				break
 			}

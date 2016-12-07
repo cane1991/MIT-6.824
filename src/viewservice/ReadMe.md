@@ -32,7 +32,7 @@ vs的存在是为了切换primary，保证primary 挂机之后选择新的primar
     > 更新ttl
 
 ### 系统功能
-    > **内存**kv数据存储
+    > *内存*kv数据存储
 
 ### view
     > view是集群的当前视图，表明集群哪个节点是Primary,哪个是BackUp
@@ -51,4 +51,4 @@ vs的存在是为了切换primary，保证primary 挂机之后选择新的primar
     > 3. 如果primary不能返回ping acknowledges给VS，集群将无法自动恢复
     
 ### 测试
-    > cd到viewsercice目录，执行**go test**
+    > cd到viewsercice目录，执行*go test*
