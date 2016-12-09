@@ -15,7 +15,7 @@ type View struct {
 /**
 集群节点ping VS的周期
  */
-const PingInterval  = time.Second * 10
+const PingInterval  = time.Millisecond * 100
 
 /**
 
