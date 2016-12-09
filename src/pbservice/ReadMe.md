@@ -32,3 +32,5 @@ cd到pbservice 执行 **go test**
 
 2. bio模式
 
+3. backup升级之后，需要完全复制整个数据库数据
+
