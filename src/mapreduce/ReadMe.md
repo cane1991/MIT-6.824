@@ -35,3 +35,7 @@
 2. 通过channel实现，由于需要复用woker资源，所以map之后返回woker到registerchannel，供master调度
 
 3. go routine实现并发执行map或者reduce
+
+4. 容错？schedule函数里面，是一个for循环，直到任务执行成功（所以会循环调度，直到找到可以成功执行的worker）
+
+5. 操作幂等性：所以上一步，重复执行没关系（因为可能是rpc错误也可能是worker fail了，所以可能会重复执行）
